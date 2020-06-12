@@ -23,19 +23,20 @@ repositories {
 dependencies {
     implementation platform('software.amazon.awssdk:bom:2.13.20')
     implementation 'software.amazon.awssdk:s3'
+    implementation 'software.amazon.awssdk:secretsmanager'
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation group: 'org.json', name: 'json', version: '20200518'
+
 
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.12'
 
+    
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
 
 application {
     // Define the main class for the application.
-    mainClassName = 'edu.au.cc.gallery.tools.UserAdmin'
-}
-
-run {
-	standardInput = System.in
+    mainClassName = 'edu.au.cc.gallery.App'
 }
