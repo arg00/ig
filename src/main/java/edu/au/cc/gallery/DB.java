@@ -11,12 +11,17 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class DB {
 
     public DB() {
     	//System.out.println("made new db");
     }
-
+	
+	
+	/*
     private static final String dbUrl = "jdbc:postgresql://gallery-db.c5qjvlv2tflz.us-west-1.rds.amazonaws.com/image_gallery";
 
     private Connection connection;
@@ -32,6 +37,31 @@ public class DB {
 	    System.exit(1);
 	}
 	
+    }
+	*/
+	
+	private static final String dbUrl = "jdbc:postgresql://image-gallery-db.c5qjvlv2tflz.us-west-1.rds.amazonaws.com/image_gallery";
+
+    private Connection connection;
+
+    private JSONObject getSecret() {
+	String s = Secrets.getSecretImageGallery();
+	return new JSONObject(s);
+    }
+
+    private String getPassword(JSONObject secret) {
+	return secret.getString("password");
+    }
+    
+    public void connect() throws SQLException {
+		try {
+			Class.forName("org.postgresql.Driver");
+			JSONObject secret = getSecret();
+			connection = DriverManager.getConnection(dbUrl, "image_gallery", getPassword(secret));
+		} catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+			System.exit(1);
+		}
     }
 
     public ResultSet executeQuery(String query) throws SQLException {
