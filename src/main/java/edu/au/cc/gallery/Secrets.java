@@ -11,7 +11,7 @@ public class Secrets {
 
     public static String getSecretImageGallery() {
 
-	String secretName = "sec-ig-image_gallery";
+	String secretName = "sec-ig-image-gallery";
 	Region region = Region.US_WEST_1;
 
 	// Create a Secrets Manager client

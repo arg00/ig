@@ -16,9 +16,11 @@ import org.json.JSONObject;
 
 public class DB {
 
+	/*
     public DB() {
     	//System.out.println("made new db");
     }
+    */
 	
 	
 	/*
@@ -44,6 +46,7 @@ public class DB {
 
     private Connection connection;
 
+    
     private JSONObject getSecret() {
 	String s = Secrets.getSecretImageGallery();
 	return new JSONObject(s);
@@ -52,6 +55,7 @@ public class DB {
     private String getPassword(JSONObject secret) {
 	return secret.getString("password");
     }
+    
     
     public void connect() throws SQLException {
 		try {
@@ -130,5 +134,17 @@ public class DB {
     public void deleteUser(String un) throws Exception {
 	String[] vals = { un };
 	this.execute("delete from users where username = ?", vals);
+    }
+
+    public ArrayList<String> getUserInfo(String username) throws Exception {
+	String[] vals = { username };
+	ResultSet rs = this.executeQuery("select * from users where username = ?", vals);
+	ArrayList<String> userInfo = new ArrayList<String>();
+	while (rs.next()) {
+		userInfo.add(username);
+		userInfo.add(rs.getString(2));
+		userInfo.add(rs.getString(3));
+	}
+	return userInfo;
     }
 }

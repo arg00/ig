@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+	<head><title>User Management - Edit User</title><meta charset=\"utf-8\" /></head>
+		<body>
+			<h2>User Management</h2>
+			<h3>Edit User</h3>
+			<h4>Editing info for user: {{uname}}</h4>
+			<form action="./edit">
+				<input type="hidden" name=uname value={{uname}}><br>
+  				<label for="pwd">Password (leave blank to keep current password):</label><br>
+  				<input type="text" id="pwd" name="pwd"><br>
+				<label for "fname">Full name (leave blank to keep current full name):</label><br>
+				<input type="text" id="fname" name="fname"><br>
+				<input type="submit" value="Update user"><br><br>
+			</form>
+			<button type="button"><a href="../admin">Cancel and return to Admin Page</a></button>
+		</body>
+</html>

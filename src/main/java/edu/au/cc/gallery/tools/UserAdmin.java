@@ -5,11 +5,47 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class UserAdmin {
+	
+	private DB db;
 
-	public static void main(String[] args) throws Exception {
-	        DB db = new DB();
+	public UserAdmin() throws Exception {
+		db = new DB();
 		db.initDB();
+	}
+
+	public boolean addUser(String uname, String pwd, String fname) throws Exception {
+		ArrayList<String> currUserList = db.getUsers();
+		if (currUserList.contains(uname)) return false;
 		
+		db.addUser(uname, pwd, fname);
+		return true;
+	}
+
+	public boolean editUser(String uname, String pwd, String fname) throws Exception {
+		ArrayList<String> currUserList = db.getUsers();
+		if (!currUserList.contains(uname)) return false;
+
+		db.updateUser(uname, pwd, fname);
+		return true;
+	}
+
+	public boolean deleteUser(String uname) throws Exception {
+		ArrayList<String> currUserList = db.getUsers();
+		if (!currUserList.contains(uname)) return false;
+
+		db.deleteUser(uname);
+		return true;	
+	}
+
+	public ArrayList<String> getUsers() throws Exception {
+		return db.getUsers();
+	}
+
+	public ArrayList<String> getUserInfo(String uname) throws Exception {
+		return db.getUserInfo(uname);
+	}
+
+	public void runCLAdmin() throws Exception {
 		Scanner sc = new Scanner(System.in);
                 int input = -1;
 

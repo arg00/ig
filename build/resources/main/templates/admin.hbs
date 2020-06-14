@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+	<head><title>User Management - Admin</title><meta charset=\"utf-8\" /></head>
+		<body>
+			<h2>User Management</h2>
+			<h3>Admin</h3>
+			<h4>User List:</h4>
+			<ul>
+				{{#users}}
+				<li><a href="./admin/editUser?uname={{username}}">User: {{username}}, Full name: {{full_name}}</a>  <button type="button"><a href="./admin/deleteUser?uname={{username}}">Delete</a></button></li>
+				{{/users}}
+			</ul>
+			<button type="button"><a href="./admin/createUser">Create User</a></button>
+		</body>
+</html>

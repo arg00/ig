@@ -3,12 +3,117 @@
  */
 package edu.au.cc.gallery;
 
+import edu.au.cc.gallery.tools.UserAdmin;
+
+import java.util.Map;
+import java.util.HashMap;
+import java.util.ArrayList;
+
+import static spark.Spark.*;
+
+import spark.ModelAndView;
+
+import spark.template.handlebars.HandlebarsTemplateEngine;
+
 public class App {
     public String getGreeting() {
-        return "Hello arg00.";
+	return "Hi!";
+    }
+    
+    public static ArrayList<HashMap<String, String>> getUserData(UserAdmin ua) throws Exception {
+		ArrayList<String> users = ua.getUsers();
+		HashMap<String, Object> usersData = new HashMap<String, Object>();
+		ArrayList<HashMap<String,String>> allUserVals = new ArrayList<HashMap<String, String>>();
+		for (String username : users) {
+			HashMap<String, String> userInfo = new HashMap<String, String>();
+			ArrayList<String> userVals = ua.getUserInfo(username);
+			userInfo.put("username", username);
+			userInfo.put("password", userVals.get(1));
+			userInfo.put("full_name", userVals.get(2));
+			usersData.put(username, userInfo);
+			allUserVals.add(userInfo);
+		}
+		return allUserVals;
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println("App says hello");
+	String portString = System.getenv("JETTY_PORT");
+	if (portString == null || portString.equals(""))
+	    port(5000);
+	else
+	    port(Integer.parseInt(portString));
+	
+		
+	UserAdmin ua = new UserAdmin();
+	//DB db = new DB();
+	//db.initDB();
+
+	// init users map
+	/*
+	ArrayList<String> users = ua.getUsers();
+	HashMap<String, Object> usersData = new HashMap<String, Object>();
+	ArrayList<HashMap<String,String>> allUserVals = new ArrayList<HashMap<String, String>>();
+	for (String username : users) {
+		HashMap<String, String> userInfo = new HashMap<String, String>();
+		ArrayList<String> userVals = ua.getUserInfo(username);
+		userInfo.put("username", username);
+		userInfo.put("password", userVals.get(1));
+		userInfo.put("full_name", userVals.get(2));
+		usersData.put(username, userInfo);
+		allUserVals.add(userInfo);
+	}
+	*/
+
+	get("/admin", (req, res) -> {
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("users", getUserData(ua));
+		return new HandlebarsTemplateEngine()
+			.render(new ModelAndView(model, "admin.hbs"));
+	});
+
+	get("/admin/createUser", (req, res) -> {
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		return new HandlebarsTemplateEngine()
+			.render(new ModelAndView(model, "createUser.hbs"));
+	});
+
+	get("/addUser", (req, res) -> {
+	       String uname = req.queryParams("uname");
+       		String pwd = req.queryParams("pwd");
+ 		String fname = req.queryParams("fname");
+	     	if (ua.addUser(uname, pwd, fname))
+			return "User " + uname + " created. <a href=\"../admin\">Return to admin page.</a>";
+		else
+			return "Couldn't create " + uname + ". User already exists. <a href=\"../admin\">Return to admin page.</a>";
+	});				
+
+	get("/admin/deleteUser", (req, res) -> {
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("uname", req.queryParams("uname"));
+		return new HandlebarsTemplateEngine()
+			.render(new ModelAndView(model, "deleteUser.hbs"));
+	});
+
+	get("/admin/delete", (req, res) -> {
+		String uname = req.queryParams("uname");
+		ua.deleteUser(uname);
+		return "User " + uname + " deleted. <a href=\"../admin\">Return to admin page.</a>";
+	});
+
+	get("/admin/editUser", (req, res) -> {
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("uname", req.queryParams("uname"));
+		return new HandlebarsTemplateEngine()
+			.render(new ModelAndView(model, "editUser.hbs"));
+	});
+
+	get("/admin/edit", (req, res) -> {
+		String uname = req.queryParams("uname");
+		String pwd = req.queryParams("pwd");
+		String fname = req.queryParams("fname");
+		ua.editUser(uname, pwd, fname);	
+		return "User " + uname + " updated. <a href=\"../admin\">Return to admin page.</a>";
+	});
     }
 }
