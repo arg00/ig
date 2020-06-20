@@ -9,8 +9,8 @@ su ec2-user -l -c 'curl -s "https://get.sdkman.io" | bash && source .bashrc && s
 
 # Configure/install custom software
 cd /home/ec2-user
-git clone https://github.com/cdavidshaffer/java-image-gallery.git
-chown -R ec2-user:ec2-user java-image-gallery
+git clone https://github.com/arg0055/ig.git
+chown -R ec2-user:ec2-user ig
 
 # Start/enable services
 systemctl stop postfix
