@@ -86,7 +86,7 @@ public class App {
 			.render(new ModelAndView(model, "createUser.hbs"));
 	});
 
-	get("/addUser", (req, res) -> {
+	get("admin/addUser", (req, res) -> {
 		if ((!checkAuthenticated(req, res)) || (!checkAdmin(req, res))) {
 		    return "";
 		}
