@@ -173,6 +173,7 @@ public class App {
 		    return "";
 	});
 
+
 	get("/accessDenied", (req, resp) -> {
 		Map<String, Object> model = new HashMap<String, Object>();
 		return new HandlebarsTemplateEngine()
@@ -205,6 +206,27 @@ public class App {
 			.render(new ModelAndView(model, "view.hbs"));
     }
 
+    public static String attemptLogin(Request req, Response resp) {
+	String uname = req.queryParams("uname");
+	String enteredPwd = req.queryParams("pwd");
+	try {
+	    UserAdmin ua = new UserAdmin();
+	    ArrayList<String> userInfo = ua.getUserInfo(uname);
+	    String usersPwd = userInfo.get(1);
+	    if (enteredPwd.equals(usersPwd)) {
+		req.session().attribute("username", uname);
+		req.session().attribute("fullName", userInfo.get(2));
+		req.session().attribute("admin", "false");
+		resp.redirect("/debugSession");
+	    } else {
+		return "Password for " + uname + " incorrect. <button><a href=\"/login\">Try again</a></button>";
+	    }
+	    return "";
+	} catch (Exception e) {
+	    return "No account with username: " + uname + "<button><a href=\"/login\">Try again</a></button>";
+	}
+    }
+
     
     public static boolean checkAuthenticated(Request req, Response resp) {
 	if (req.session().attribute("authenticated") == null ||
@@ -234,5 +256,6 @@ public class App {
 
     public static void addMainRoutes() {
 	get("/", (req, resp) -> home(req, resp));
+	post("/login", (req, resp) -> attemptLogin(req, resp));
     }
 }

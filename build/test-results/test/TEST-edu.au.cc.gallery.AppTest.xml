@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="edu.au.cc.gallery.AppTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-06-30T19:08:01" hostname="ip-10-0-1-228.us-west-1.compute.internal" time="0.003">
+<testsuite name="edu.au.cc.gallery.AppTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-06-30T21:30:14" hostname="ip-10-0-1-228.us-west-1.compute.internal" time="0.002">
   <properties/>
-  <testcase name="testAppHasAGreeting" classname="edu.au.cc.gallery.AppTest" time="0.003"/>
+  <testcase name="testAppHasAGreeting" classname="edu.au.cc.gallery.AppTest" time="0.002"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
