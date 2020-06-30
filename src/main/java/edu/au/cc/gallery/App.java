@@ -67,8 +67,9 @@ public class App {
 	*/
 
 	get("/admin", (req, res) -> {
-		checkAuthenticated(req, res);
-		checkAdmin(req, res);
+		if ((!checkAuthenticated(req, res)) || (!checkAdmin(req, res))) {
+		    return "";
+		}
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("users", getUserData(ua));
 		return new HandlebarsTemplateEngine()
@@ -76,8 +77,9 @@ public class App {
 	});
 
 	get("/admin/createUser", (req, res) -> {
-		checkAuthenticated(req, res);
-		checkAdmin(req, res);
+	        if ((!checkAuthenticated(req, res)) || (!checkAdmin(req, res))) {
+		    return "";
+		}
 		Map<String, Object> model = new HashMap<String, Object>();
 		
 		return new HandlebarsTemplateEngine()
@@ -85,8 +87,9 @@ public class App {
 	});
 
 	get("/addUser", (req, res) -> {
-		checkAuthenticated(req, res);
-		checkAdmin(req, res);
+		if ((!checkAuthenticated(req, res)) || (!checkAdmin(req, res))) {
+		    return "";
+		}
 	       String uname = req.queryParams("uname");
        		String pwd = req.queryParams("pwd");
  		String fname = req.queryParams("fname");
@@ -100,8 +103,9 @@ public class App {
 	});				
 
 	get("/admin/deleteUser", (req, res) -> {
-		checkAuthenticated(req, res);
-		checkAdmin(req, res);
+		if ((!checkAuthenticated(req, res)) || (!checkAdmin(req, res))) {
+		    return "";
+		}
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("uname", req.queryParams("uname"));
 		return new HandlebarsTemplateEngine()
@@ -109,8 +113,9 @@ public class App {
 	});
 
 	get("/admin/delete", (req, res) -> {
-		checkAuthenticated(req, res);
-		checkAdmin(req, res);
+		if ((!checkAuthenticated(req, res)) || (!checkAdmin(req, res))) {
+		    return "";
+		}
 		String uname = req.queryParams("uname");
 		ua.deleteUser(uname);
 		res.redirect("/admin");
@@ -119,8 +124,9 @@ public class App {
 	});
 
 	get("/admin/editUser", (req, res) -> {
-		checkAuthenticated(req, res);
-		checkAdmin(req, res);
+		if ((!checkAuthenticated(req, res)) || (!checkAdmin(req, res))) {
+		    return "";
+		}
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("uname", req.queryParams("uname"));
 		return new HandlebarsTemplateEngine()
@@ -128,8 +134,9 @@ public class App {
 	});
 
 	get("/admin/edit", (req, res) -> {
-		checkAuthenticated(req, res);
-		checkAdmin(req, res);
+		if ((!checkAuthenticated(req, res)) || (!checkAdmin(req, res))) {
+		    return "";
+		}
 		String uname = req.queryParams("uname");
 		String pwd = req.queryParams("pwd");
 		String fname = req.queryParams("fname");
@@ -156,9 +163,14 @@ public class App {
 
        
         get("/login", (req, resp) -> {
-		Map<String, Object> model = new HashMap<String, Object>();
-		return new HandlebarsTemplateEngine()
+		if (req.session().attribute("authenticated") == null ||
+		    !req.session().attribute("authenticated").equals("true")) {
+		    Map<String, Object> model = new HashMap<String, Object>();
+		    return new HandlebarsTemplateEngine()
 			.render(new ModelAndView(model, "login.hbs"));
+		}
+		resp.redirect("/");
+		    return "";
 	});
 
 	get("/accessDenied", (req, resp) -> {
@@ -176,7 +188,7 @@ public class App {
 	checkAuthenticated(req, resp);
 	Map<String, Object> model = new HashMap<String, Object>();
 		return new HandlebarsTemplateEngine()
-			.render(new ModelAndView(model, "login.hbs"));
+			.render(new ModelAndView(model, "home.hbs"));
     }
 
     private static String upload(Request req, Response resp) {
@@ -186,19 +198,30 @@ public class App {
 			.render(new ModelAndView(model, "upload.hbs"));
     }
 
+    private static String view(Request req, Response resp) {
+	checkAuthenticated(req, resp);
+	Map<String, Object> model = new HashMap<String, Object>();
+		return new HandlebarsTemplateEngine()
+			.render(new ModelAndView(model, "view.hbs"));
+    }
+
     
-    public static void checkAuthenticated(Request req, Response resp) {
+    public static boolean checkAuthenticated(Request req, Response resp) {
 	if (req.session().attribute("authenticated") == null ||
 	    !req.session().attribute("authenticated").equals("true")) {
 	        resp.redirect("/login");
+		return false;
 	}
+	return true;
      }
 
-    public static void checkAdmin(Request req, Response resp) {
+    public static boolean checkAdmin(Request req, Response resp) {
 	if (req.session().attribute("admin") == null ||
 	    !req.session().attribute("admin").equals("true")) {
-	    resp.redirect("accessDenied");
+	    resp.redirect("/accessDenied");
+	    return false;
 	}
+	return true;
      }
 
     public static void addUploadRoutes() {
@@ -206,7 +229,7 @@ public class App {
     }
 
     public static void addViewRoutes() {
-
+	get("/view", (req, resp) -> view(req, resp));
     }
 
     public static void addMainRoutes() {
