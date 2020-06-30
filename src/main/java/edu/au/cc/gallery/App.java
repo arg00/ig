@@ -8,6 +8,7 @@ import edu.au.cc.gallery.tools.UserAdmin;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.io.File;
 
 import static spark.Spark.*;
 import spark.Request;
@@ -217,14 +218,26 @@ public class App {
 		req.session().attribute("username", uname);
 		req.session().attribute("fullName", userInfo.get(2));
 		req.session().attribute("admin", "false");
-		resp.redirect("/debugSession");
+		req.session().attribute("authenticated", "true");
+		resp.redirect("/");
 	    } else {
 		return "Password for " + uname + " incorrect. <button><a href=\"/login\">Try again</a></button>";
 	    }
 	    return "";
 	} catch (Exception e) {
-	    return "No account with username: " + uname + "<button><a href=\"/login\">Try again</a></button>";
+	    return "No account with username: " + uname + ". <button><a href=\"/login\">Try again</a></button>";
 	}
+    }
+
+    public static String uploadToS3(Request req, Response resp) {
+	String imgName = req.queryParams("image");
+	try {
+	    File f = new File(imgName);
+	}
+	catch (Exception e) {
+	    return "Exception thrown.";
+	}
+	return "You uploaded: " + imgName;
     }
 
     
@@ -248,6 +261,7 @@ public class App {
 
     public static void addUploadRoutes() {
 	get("/upload", (req, res) -> upload(req, res));
+	post("/upload", (req, res) -> uploadToS3(req, res));
     }
 
     public static void addViewRoutes() {

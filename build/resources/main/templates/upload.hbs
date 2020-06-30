@@ -6,5 +6,14 @@
 </head>
 <body>
 	<h1>Upload Images</h1>
+	<div style="display:block">
+    <form action="/debugSession" method="get" enctype="multipart/form-data">
+        <label for="image">Select an image</label>
+        <input type="file" id="image" name="image"/>
+	<br/>
+        <input type="submit" id="buttonUpload" value="Upload"/>
+        <br>
+    </form>
+</div>
 </body>
 </html>
