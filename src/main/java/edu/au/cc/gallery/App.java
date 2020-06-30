@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 import static spark.Spark.*;
+import spark.Request;
+import spark.Response;
 
 import spark.ModelAndView;
 
@@ -65,6 +67,8 @@ public class App {
 	*/
 
 	get("/admin", (req, res) -> {
+		checkAuthenticated(req, res);
+		checkAdmin(req, res);
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("users", getUserData(ua));
 		return new HandlebarsTemplateEngine()
@@ -72,6 +76,8 @@ public class App {
 	});
 
 	get("/admin/createUser", (req, res) -> {
+		checkAuthenticated(req, res);
+		checkAdmin(req, res);
 		Map<String, Object> model = new HashMap<String, Object>();
 		
 		return new HandlebarsTemplateEngine()
@@ -79,6 +85,8 @@ public class App {
 	});
 
 	get("/addUser", (req, res) -> {
+		checkAuthenticated(req, res);
+		checkAdmin(req, res);
 	       String uname = req.queryParams("uname");
        		String pwd = req.queryParams("pwd");
  		String fname = req.queryParams("fname");
@@ -89,6 +97,8 @@ public class App {
 	});				
 
 	get("/admin/deleteUser", (req, res) -> {
+		checkAuthenticated(req, res);
+		checkAdmin(req, res);
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("uname", req.queryParams("uname"));
 		return new HandlebarsTemplateEngine()
@@ -96,12 +106,16 @@ public class App {
 	});
 
 	get("/admin/delete", (req, res) -> {
+		checkAuthenticated(req, res);
+		checkAdmin(req, res);
 		String uname = req.queryParams("uname");
 		ua.deleteUser(uname);
 		return "User " + uname + " deleted. <a href=\"../admin\">Return to admin page.</a>";
 	});
 
 	get("/admin/editUser", (req, res) -> {
+		checkAuthenticated(req, res);
+		checkAdmin(req, res);
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("uname", req.queryParams("uname"));
 		return new HandlebarsTemplateEngine()
@@ -109,11 +123,72 @@ public class App {
 	});
 
 	get("/admin/edit", (req, res) -> {
+		checkAuthenticated(req, res);
+		checkAdmin(req, res);
 		String uname = req.queryParams("uname");
 		String pwd = req.queryParams("pwd");
 		String fname = req.queryParams("fname");
 		ua.editUser(uname, pwd, fname);	
 		return "User " + uname + " updated. <a href=\"../admin\">Return to admin page.</a>";
 	});
+
+	get("/addSessionAttributes", (req, res) -> {
+		String key = req.queryParams("key");
+		String value = req.queryParams("value");
+		req.session().attribute(key, value);
+		return "Added key: " + key + ", value: " + value;    
+	});
+
+	get("/debugSession", (req, res) -> {
+		StringBuffer sb = new StringBuffer();
+		for (String key: req.session().attributes()) {
+		    sb.append(key+"->"+req.session().attribute(key)+"<br/>");
+		}
+		return sb.toString();    
+	});
+
+       
+        get("/login", (req, resp) -> {
+		return "login pls";
+	});
+
+	get("/", (req, resp) -> {
+		checkAuthenticated(req, resp);
+		return "homepage!!";
+	});
+
+	get("/login/restricted", (req, resp) -> {
+		return "You are not authorized to access this page. Please login as an administrator.";
+	});
+
+	addUploadRoutes();
+	addViewRoutes();
+    }
+
+    private static String upload(Request req, Response resp) {
+	return "This is the upload page!!";
+    }
+
+    
+    public static void checkAuthenticated(Request req, Response resp) {
+	if (req.session().attribute("authenticated") == null ||
+	    !req.session().attribute("authenticated").equals("true")) {
+	        resp.redirect("/login");
+	}
+     }
+
+    public static void checkAdmin(Request req, Response resp) {
+	if (req.session().attribute("admin") == null ||
+	    !req.session().attribute("admin").equals("true")) {
+	    resp.redirect("/login/restricted");
+	}
+     }
+
+    public static void addUploadRoutes() {
+	get("/upload", (req, res) -> upload(req, res));
+    }
+
+    public static void addViewRoutes() {
+
     }
 }

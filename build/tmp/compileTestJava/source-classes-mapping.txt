@@ -1,0 +1,2 @@
+edu/au/cc/gallery/AppTest.java
+ edu.au.cc.gallery.AppTest
