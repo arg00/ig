@@ -90,8 +90,11 @@ public class App {
 	       String uname = req.queryParams("uname");
        		String pwd = req.queryParams("pwd");
  		String fname = req.queryParams("fname");
-	     	if (ua.addUser(uname, pwd, fname))
-			return "User " + uname + " created. <a href=\"../admin\">Return to admin page.</a>";
+	     	if (ua.addUser(uname, pwd, fname)) {
+		        res.redirect("/admin");
+		        return "";
+		        //return "User " + uname + " created. <a href=\"../admin\">Return to admin page.</a>";
+		}
 		else
 			return "Couldn't create " + uname + ". User already exists. <a href=\"../admin\">Return to admin page.</a>";
 	});				
@@ -110,7 +113,9 @@ public class App {
 		checkAdmin(req, res);
 		String uname = req.queryParams("uname");
 		ua.deleteUser(uname);
-		return "User " + uname + " deleted. <a href=\"../admin\">Return to admin page.</a>";
+		res.redirect("/admin");
+		//return "User " + uname + " deleted. <a href=\"../admin\">Return to admin page.</a>";
+		return "";
 	});
 
 	get("/admin/editUser", (req, res) -> {
@@ -129,7 +134,9 @@ public class App {
 		String pwd = req.queryParams("pwd");
 		String fname = req.queryParams("fname");
 		ua.editUser(uname, pwd, fname);	
-		return "User " + uname + " updated. <a href=\"../admin\">Return to admin page.</a>";
+		res.redirect("/admin");
+		return "";
+		//return "User " + uname + " updated. <a href=\"../admin\">Return to admin page.</a>";
 	});
 
 	get("/addSessionAttributes", (req, res) -> {
@@ -149,24 +156,34 @@ public class App {
 
        
         get("/login", (req, resp) -> {
-		return "login pls";
+		Map<String, Object> model = new HashMap<String, Object>();
+		return new HandlebarsTemplateEngine()
+			.render(new ModelAndView(model, "login.hbs"));
 	});
 
-	get("/", (req, resp) -> {
-		checkAuthenticated(req, resp);
-		return "homepage!!";
-	});
-
-	get("/login/restricted", (req, resp) -> {
-		return "You are not authorized to access this page. Please login as an administrator.";
+	get("/accessDenied", (req, resp) -> {
+		Map<String, Object> model = new HashMap<String, Object>();
+		return new HandlebarsTemplateEngine()
+			.render(new ModelAndView(model, "accessDenied.hbs"));
 	});
 
 	addUploadRoutes();
 	addViewRoutes();
+	addMainRoutes();
+    }
+
+    private static String home(Request req, Response resp) {
+	checkAuthenticated(req, resp);
+	Map<String, Object> model = new HashMap<String, Object>();
+		return new HandlebarsTemplateEngine()
+			.render(new ModelAndView(model, "login.hbs"));
     }
 
     private static String upload(Request req, Response resp) {
-	return "This is the upload page!!";
+	checkAuthenticated(req, resp);
+	Map<String, Object> model = new HashMap<String, Object>();
+		return new HandlebarsTemplateEngine()
+			.render(new ModelAndView(model, "upload.hbs"));
     }
 
     
@@ -180,7 +197,7 @@ public class App {
     public static void checkAdmin(Request req, Response resp) {
 	if (req.session().attribute("admin") == null ||
 	    !req.session().attribute("admin").equals("true")) {
-	    resp.redirect("/login/restricted");
+	    resp.redirect("accessDenied");
 	}
      }
 
@@ -190,5 +207,9 @@ public class App {
 
     public static void addViewRoutes() {
 
+    }
+
+    public static void addMainRoutes() {
+	get("/", (req, resp) -> home(req, resp));
     }
 }
