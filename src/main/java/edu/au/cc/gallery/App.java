@@ -211,27 +211,27 @@ public class App {
 	String fullName = req.session().attribute("fullName");
 
 	try {
-	    ArrayList<String> imageURLs = getUsersImageURLs(username);
+	    UserAdmin ua = new UserAdmin();
+	    ArrayList<String> imageNames = ua.getUsersImages(username);
+	    HashMap<String, String> imageURLs = getUsersImageURLs(username, imageNames);
 	    model.put("imageURLs", imageURLs);
+	    model.put("imageNames", imageNames);
 	} catch (Exception e) {
 	    return "Error fetching user's images.";
 	}
 
-	
 	model.put("full_name", fullName);
 	model.put("username", username);
 		return new HandlebarsTemplateEngine()
 			.render(new ModelAndView(model, "view.hbs"));
     }
 
-    public static ArrayList<String> getUsersImageURLs(String username) throws Exception {
-	ArrayList<String> usersImageURLs = new ArrayList<String>();
+    public static HashMap<String, String> getUsersImageURLs(String username, ArrayList<String> imgNames) throws Exception {
+	HashMap<String, String> usersImageURLs = new HashMap<String, String>();
 	String s3RsrcPrefix = "https://s3-us-west-1.amazonaws.com/edu.au.cc.arg0055.image-gallery/images/";
-	
-	UserAdmin ua = new UserAdmin();
-	ArrayList<String> usersImageNames = ua.getUsersImages(username);
-	    for (String imgName : usersImageNames) {
-		usersImageURLs.add(s3RsrcPrefix + username + "/" + imgName);
+       
+	    for (String imgName : imgNames) {
+		usersImageURLs.put(imgName, (s3RsrcPrefix + username + "/" + imgName));
 	    }
       
 	return usersImageURLs;
