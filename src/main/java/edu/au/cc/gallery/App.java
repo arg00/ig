@@ -270,6 +270,26 @@ public class App {
 	return "You uploaded: " + imgName;
     }
 
+    public static String deleteImage(Request req, Response resp) {
+	String imgName = req.queryParams("imgName");
+	String username = req.queryParams("username");
+	S3 s3client = new S3();
+	s3client.connect();
+	if (s3client.deleteObject(username, imgName)) {
+	    System.out.println("deleted on s3");
+	} else {}
+
+	try {
+	    UserAdmin ua = new UserAdmin();
+	    if (ua.deleteImage(username, imgName)) {
+		return "Image deleted!";
+	    } else return "Failed to delete image.";
+	    
+	} catch (Exception e) {
+	    return "Failed to delete image. <a href=\"/view\">Back</a>";
+	}
+     }
+
     
     public static boolean checkAuthenticated(Request req, Response resp) {
 	if (req.session().attribute("authenticated") == null ||
@@ -296,6 +316,7 @@ public class App {
 
     public static void addViewRoutes() {
 	get("/view", (req, resp) -> view(req, resp));
+	post("/deleteImage", (req, resp) -> deleteImage(req, resp));
     }
 
     public static void addMainRoutes() {

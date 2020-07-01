@@ -41,6 +41,10 @@ public class UserAdmin {
 		return db.getUsers();
 	}
 
+    public boolean deleteImage(String username, String imgName) {
+	return db.deleteImage(username, imgName);
+    }
+
 	public ArrayList<String> getUserInfo(String uname) throws Exception {
 		return db.getUserInfo(uname);
 	}

@@ -5,13 +5,14 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CreateBucketConfiguration;
 import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.core.sync.RequestBody;
 
 public class S3 {
     private static final Region region = Region.US_WEST_1;
-    private S3Client client;
+    private static S3Client client;
 
-    public void connect() {
+    public static void connect() {
         client = S3Client.builder().region(region).build();
     }
 
@@ -34,12 +35,18 @@ public class S3 {
 	client.putObject(por, RequestBody.fromString(value));
     }
 	
-	public static boolean deleteObject(String bucketName, String objectName) {
-		try {
-			client.deleteObject(bucketName, objectName);
+	public static boolean deleteObject(String username, String objectName) {
+	    String bucketName = "edu.au.cc.arg0055.image-gallery/images/" + username;
+	    DeleteObjectRequest dor = DeleteObjectRequest.builder()
+		.bucket(bucketName)
+		.key(objectName)
+		.build();
+	    try {
+		client.deleteObject(dor);
 			return true;
 		} catch (Exception e) {
-			return false;
+		System.out.println(e);
+		      return false;
 		}
 	}
 }

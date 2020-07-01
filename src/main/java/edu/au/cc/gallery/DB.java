@@ -157,4 +157,15 @@ public class DB {
 	}
 	return usersImages;
     }
+
+    public boolean deleteImage(String username, String imgName) {
+	String[] vals = { username, imgName };
+	try {
+	    this.execute("DELETE FROM images WHERE owner_username=? AND image_name=?", vals);
+	    return true;
+	}
+	catch (Exception e) {
+	    return false;
+	}
+    }
 }
