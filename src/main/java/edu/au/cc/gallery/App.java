@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.File;
+import org.apache.commons.lang3.StringUtils;
 
 import static spark.Spark.*;
 import spark.Request;
@@ -94,7 +95,10 @@ public class App {
 	       String uname = req.queryParams("uname");
        		String pwd = req.queryParams("pwd");
  		String fname = req.queryParams("fname");
-	     	if (ua.addUser(uname, pwd, fname)) {
+		if (!StringUtils.isAlphanumeric(uname)) {
+		    return "Username can only contain letters and numbers. <a href=\"../admin\">Return to admin page.</a>"; 
+		}
+	     	else if (ua.addUser(uname, pwd, fname)) {
 		        res.redirect("/admin");
 		        return "";
 		        //return "User " + uname + " created. <a href=\"../admin\">Return to admin page.</a>";
@@ -204,19 +208,33 @@ public class App {
 	checkAuthenticated(req, resp);
 	Map<String, Object> model = new HashMap<String, Object>();
 	String username = req.session().attribute("username");
+	String fullName = req.session().attribute("fullName");
 
 	try {
-	    UserAdmin ua = new UserAdmin();
-	    ArrayList<String> images = ua.getUsersImages(username);
-	    model.put("images", images);
-	}
-	catch (Exception e) {
+	    ArrayList<String> imageURLs = getUsersImageURLs(username);
+	    model.put("imageURLs", imageURLs);
+	} catch (Exception e) {
 	    return "Error fetching user's images.";
 	}
+
 	
+	model.put("full_name", fullName);
 	model.put("username", username);
 		return new HandlebarsTemplateEngine()
 			.render(new ModelAndView(model, "view.hbs"));
+    }
+
+    public static ArrayList<String> getUsersImageURLs(String username) throws Exception {
+	ArrayList<String> usersImageURLs = new ArrayList<String>();
+	String s3RsrcPrefix = "https://s3-us-west-1.amazonaws.com/edu.au.cc.arg0055.image-gallery/images/";
+	
+	UserAdmin ua = new UserAdmin();
+	ArrayList<String> usersImageNames = ua.getUsersImages(username);
+	    for (String imgName : usersImageNames) {
+		usersImageURLs.add(s3RsrcPrefix + username + "/" + imgName);
+	    }
+      
+	return usersImageURLs;
     }
 
     public static String attemptLogin(Request req, Response resp) {

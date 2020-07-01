@@ -5,11 +5,20 @@
 	<meta charset="utf-8" />
 </head>
 <body>
-  <h1>View Images</h1>
-  <ul>
-		{{#images}}
-				<li>{{this}}</li>
-		{{/images}}
-  </ul>
+  <div style="text-align: center">
+    <h1>View {{full_name}}'s Images</h1>
+    <button><a href="./"/>Return to Main Menu</a></button>
+  </div>
+  
+  <div style="float: none">
+    {{#imageURLs}}
+         <div style="float: left">
+                 <figure>
+                    <a href="{{this}}"><img src="{{this}}" width="400px"/></a>
+		 </figure>
+		 <figcaption style="text-align: center"><button><a href="#">Delete</a></button></figcaption>
+		 </div>
+	{{/imageURLs}}
+  </div>
 </body>
 </html>
