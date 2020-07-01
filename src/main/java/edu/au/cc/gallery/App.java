@@ -203,6 +203,18 @@ public class App {
     private static String view(Request req, Response resp) {
 	checkAuthenticated(req, resp);
 	Map<String, Object> model = new HashMap<String, Object>();
+	String username = req.session().attribute("username");
+
+	try {
+	    UserAdmin ua = new UserAdmin();
+	    ArrayList<String> images = ua.getUsersImages(username);
+	    model.put("images", images);
+	}
+	catch (Exception e) {
+	    return "Error fetching user's images.";
+	}
+	
+	model.put("username", username);
 		return new HandlebarsTemplateEngine()
 			.render(new ModelAndView(model, "view.hbs"));
     }

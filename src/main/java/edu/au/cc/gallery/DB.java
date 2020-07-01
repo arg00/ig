@@ -147,4 +147,14 @@ public class DB {
 	}
 	return userInfo;
     }
+
+    public ArrayList<String> getUsersImages(String username) throws Exception {
+	String[] vals = { username };
+	ResultSet rs = this.executeQuery("select * from images where owner_username = ?", vals);
+	ArrayList<String> usersImages = new ArrayList<String>();
+	while (rs.next()) {
+	    usersImages.add(rs.getString(1));
+	}
+	return usersImages;
+    }
 }

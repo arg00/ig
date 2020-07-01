@@ -45,6 +45,10 @@ public class UserAdmin {
 		return db.getUserInfo(uname);
 	}
 
+        public ArrayList<String> getUsersImages(String uname) throws Exception {
+	    return db.getUsersImages(uname);
+        }
+    
 	public void runCLAdmin() throws Exception {
 		Scanner sc = new Scanner(System.in);
                 int input = -1;
