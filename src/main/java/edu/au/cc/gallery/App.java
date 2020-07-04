@@ -302,6 +302,7 @@ public class App {
 	try {
 	    UserAdmin ua = new UserAdmin();
 	    if (ua.deleteImage(username, imgName)) {
+		resp.redirect("/view");
 		return "Image deleted!";
 	    } else return "Failed to delete image.";
 	    

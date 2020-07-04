@@ -51,16 +51,17 @@ public class S3 {
     
 	
 	public static boolean deleteObject(String username, String objectName) {
-	    String bucketName = "edu.au.cc.arg0055.image-gallery/images/" + username;
+	    String bucketName = "edu.au.cc.arg0055.image-gallery";
+	    String deleteObjectPath = "images/" + username + "/" + objectName;
 	    DeleteObjectRequest dor = DeleteObjectRequest.builder()
 		.bucket(bucketName)
-		.key(objectName)
+		.key(deleteObjectPath)
 		.build();
 	    try {
 		client.deleteObject(dor);
 			return true;
 		} catch (Exception e) {
-		System.out.println(e);
+		System.out.println("Failed to delete from s3\n" + e);
 		      return false;
 		}
 	}
