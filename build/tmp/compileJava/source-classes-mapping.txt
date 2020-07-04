@@ -2,9 +2,9 @@ edu/au/cc/gallery/S3.java
  edu.au.cc.gallery.S3
 edu/au/cc/gallery/DB.java
  edu.au.cc.gallery.DB
-edu/au/cc/gallery/App.java
- edu.au.cc.gallery.App
-edu/au/cc/gallery/tools/UserAdmin.java
- edu.au.cc.gallery.tools.UserAdmin
 edu/au/cc/gallery/Secrets.java
  edu.au.cc.gallery.Secrets
+edu/au/cc/gallery/tools/UserAdmin.java
+ edu.au.cc.gallery.tools.UserAdmin
+edu/au/cc/gallery/App.java
+ edu.au.cc.gallery.App

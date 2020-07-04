@@ -41,11 +41,14 @@ public class App {
     }
 
     public static void main(String[] args) throws Exception {
+	/*
 	String portString = System.getenv("JETTY_PORT");
 	if (portString == null || portString.equals(""))
 	    port(5000);
 	else
 	    port(Integer.parseInt(portString));
+	*/
+	port(8888);
 	
 		
 	UserAdmin ua = new UserAdmin();
