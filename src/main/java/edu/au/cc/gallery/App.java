@@ -262,17 +262,6 @@ public class App {
 	}
     }
 
-    public static String uploadToS3(Request req, Response resp) {
-	String imgName = req.queryParams("image");
-	try {
-	    File f = new File(imgName);
-	}
-	catch (Exception e) {
-	    return "Exception thrown.";
-	}
-	return "You uploaded: " + imgName;
-    }
-
     public static String deleteImage(Request req, Response resp) {
 	String imgName = req.queryParams("imgName");
 	String username = req.queryParams("username");
@@ -314,7 +303,7 @@ public class App {
 
     public static void addUploadRoutes() {
 	get("/upload", (req, res) -> upload(req, res));
-	post("/upload", (req, res) -> uploadToS3(req, res));
+	post("/uploadImage", (req, res) -> uploadToS3(req, res));
     }
 
     public static void addViewRoutes() {
