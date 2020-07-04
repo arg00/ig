@@ -168,4 +168,15 @@ public class DB {
 	    return false;
 	}
     }
+
+    public boolean uploadImage(String username, String imgName) {
+	String[] vals = { imgName, username };
+	try {
+	    this.execute("INSERT INTO images VALUES(?, ?)", vals);
+	    return true;
+	}
+	catch (Exception e) {
+	    return false;
+	}
+    }
 }

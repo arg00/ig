@@ -55,8 +55,16 @@ public class Upload {
 	      e.printStackTrace();
 	      return "Error connecting to s3: " + s3ImageBucket + "/" +  imageBucketPath;
 	  }
-          return s3ImageBucket + imageBucketPath;
+          //return s3ImageBucket + imageBucketPath;
               //return "<img src = \"/home/ec2-user/javatest/images/lover.jpg\"/>";
           //return "<a href=\"/\"><img src=\"" + imagePathName + "\"/> </a>";
+
+	  DB db = new DB();
+	  db.initDB();
+	  if ( db.uploadImage(username, imageName) ) {
+	      resp.redirect("/view");
+	      return "uplod good";
+	  }
+	  else { return "upload failed"; }
     }
 }
