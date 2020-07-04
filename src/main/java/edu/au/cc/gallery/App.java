@@ -335,7 +335,7 @@ public class App {
 
     public static void addUploadRoutes() {
 	get("/upload", (req, res) -> upload(req, res));
-	post("/uploadImage", (req, res) -> Upload.uploadToS3(req, res));
+	post("/uploadImage", (req, res) -> Upload.uploadToS3(req, res, req.session().attribute("username")));
     }
 
     public static void addViewRoutes() {
