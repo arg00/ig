@@ -278,7 +278,7 @@ public class App {
 	    if (enteredPwd.equals(usersPwd)) {
 		req.session().attribute("username", uname);
 		req.session().attribute("fullName", userInfo.get(2));
-		req.session().attribute("admin", "false");
+		setAdmin(req, resp);
 		req.session().attribute("authenticated", "true");
 		resp.redirect("/");
 	    } else {
@@ -347,5 +347,16 @@ public class App {
     public static void addMainRoutes() {
 	get("/", (req, resp) -> home(req, resp));
 	post("/login", (req, resp) -> attemptLogin(req, resp));
+    }
+
+    public static void setAdmin(Request req, Response resp) {
+	String username = req.session().attribute("username");
+	if (username.equals("arg00") || username.equals("admin")) {
+	    req.session().attribute("admin", "true");
+	}
+	else {
+	    req.session().attribute("admin", "false");
+	}
+	
     }
 }

@@ -42,7 +42,7 @@ public class Upload {
 	  catch (Exception e) {
 	      System.out.println(e);
 	      e.printStackTrace();
-     	      return "Failed to upload file to ec2 but made it to upload method!";
+     	      return "Invalid file selected. <a href=\"/upload\">Back</a>";
 	  }
 
 	  String imageBucketPath = "images/" + username + "/" + imageName;
