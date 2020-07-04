@@ -188,6 +188,34 @@ public class App {
 			.render(new ModelAndView(model, "accessDenied.hbs"));
 	});
 
+
+	/*
+	post("/uploadToS3", (req, resp) -> {
+		String imagesPath = "/home/ec2-user/ig/src/main/resources/images";
+		String imagePathName = "";
+
+		req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("imagesPath"));
+		Part filePart = req.raw().getPart("myfile");
+
+		try (InputStream inputStream = filePart.getInputStream()) {
+              imagePathName = imagesPath + filePart.getSubmittedFileName();
+              OutputStream outputStream = new FileOutputStream(imagePathName);
+              IOUtils.copy(inputStream, outputStream);
+              outputStream.close();
+		}
+
+		catch (Exception e) {
+              System.out.println(e);
+              e.printStackTrace();
+              return "Failed to upload file but made it to upload method!";
+          }
+
+          return imagePathName;
+
+
+	});
+	*/
+
 	addUploadRoutes();
 	addViewRoutes();
 	addMainRoutes();
@@ -282,6 +310,10 @@ public class App {
 	}
      }
 
+    public static String uploadTest(Request req, Response resp) {
+	return "";
+    }
+
     
     public static boolean checkAuthenticated(Request req, Response resp) {
 	if (req.session().attribute("authenticated") == null ||
@@ -303,7 +335,7 @@ public class App {
 
     public static void addUploadRoutes() {
 	get("/upload", (req, res) -> upload(req, res));
-	post("/uploadImage", (req, res) -> uploadToS3(req, res));
+	post("/uploadImage", (req, res) -> Upload.uploadToS3(req, res));
     }
 
     public static void addViewRoutes() {

@@ -20,18 +20,26 @@ import spark.template.handlebars.HandlebarsTemplateEngine;
 
 public class Upload {
 
-    public static String uploadToS3(Request req, Response resp){
-        String imagesPath = "~/ig/src/main/resources/images/";
-      
-          req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("D:/tmp"));
-          Part filePart = req.raw().getPart("myfile")
-          String imagePathName = ""
+    public static String uploadToS3(Request req, Response resp) throws Exception {
+        String imagesPath = "/home/ec2-user/ig/src/main/resources/images/";
+	String imagePathName = "";
+
+	req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("D:/tmp"));
+	Part filePart = req.raw().getPart("image");
+	  
           try (InputStream inputStream = filePart.getInputStream()) {
               imagePathName = imagesPath + filePart.getSubmittedFileName();
               OutputStream outputStream = new FileOutputStream(imagePathName);
               IOUtils.copy(inputStream, outputStream);
               outputStream.close();
-          
+          }
+
+	  catch (Exception e) {
+	      System.out.println(e);
+	      e.printStackTrace();
+     	      return "Failed to upload file but made it to upload method!";
+	  }
+	  
           return imagePathName;
               //return "<img src = \"/home/ec2-user/javatest/images/lover.jpg\"/>";
           //return "<a href=\"/\"><img src=\"" + imagePathName + "\"/> </a>";
