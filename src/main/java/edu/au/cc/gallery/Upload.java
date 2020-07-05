@@ -11,6 +11,7 @@ import spark.utils.IOUtils;
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
 import java.io.FileOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -23,15 +24,21 @@ public class Upload {
     public static String uploadToS3(Request req, Response resp, String username) throws Exception {
 	//String username = req.session.attribute("username");
 	String s3ImageBucket = "edu.au.cc.arg0055.image-gallery";
-	
-	String imageDirLocal = "/home/ec2-user/ig/src/main/resources/images/";
+
+	String localHomeDir = System.getenv("HOME");
+	String imageDirLocal = localHomeDir + "/gallery-images/";
 	String imagePathLocal = "";
 	String imageName = "";
 
+	
 	req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("D:/tmp"));
 	Part filePart = req.raw().getPart("image");
 	  
           try (InputStream inputStream = filePart.getInputStream()) {
+	      File imagesDir = new File(imageDirLocal);
+	      if (!imagesDir.exists()) {
+		  imagesDir.mkdir();
+	      }
               imageName = filePart.getSubmittedFileName();
 	      imagePathLocal = imageDirLocal + imageName;
               OutputStream outputStream = new FileOutputStream(imagePathLocal);
@@ -42,7 +49,7 @@ public class Upload {
 	  catch (Exception e) {
 	      System.out.println(e);
 	      e.printStackTrace();
-     	      return "Invalid file selected. <a href=\"/upload\">Back</a>";
+     	      return "Invalid file selected or images directory not configured. <a href=\"/upload\">Back</a>";
 	  }
 
 	  String imageBucketPath = "images/" + username + "/" + imageName;
