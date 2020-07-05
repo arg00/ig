@@ -351,7 +351,7 @@ public class App {
 
     public static void setAdmin(Request req, Response resp) {
 	String username = req.session().attribute("username");
-	if (username.equals("arg00") || username.equals("admin")) {
+	if (username.equals("arg00") || username.equals("admin") || username.equals("dongji")) {
 	    req.session().attribute("admin", "true");
 	}
 	else {

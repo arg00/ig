@@ -41,9 +41,10 @@ public class DB {
 	
     }
 	*/
-	
-	private static final String dbUrl = "jdbc:postgresql://image-gallery-db.c5qjvlv2tflz.us-west-1.rds.amazonaws.com/image_gallery";
 
+	private String dbUrl = "jdbc:postgresql://image-gallery-db.c5qjvlv2tflz.us-west-1.rds.amazonaws.com/image_gallery";
+
+    
     private Connection connection;
 
     
@@ -58,10 +59,21 @@ public class DB {
     
     
     public void connect() throws SQLException {
+	/*
+	if (System.getenv("IG_DATABASE") != null) {
+	    dbUrl = System.getenv("IG_DATABASE");
+	}
+	*/
 		try {
 			Class.forName("org.postgresql.Driver");
 			JSONObject secret = getSecret();
-			connection = DriverManager.getConnection(dbUrl, "image_gallery", getPassword(secret));
+			String db_pwd = getPassword(secret);
+			/*
+			if (System.getenv("IG_PASSWD") != null) {
+			    db_pwd = System.getenv("IG_PASSWD");
+			}
+			*/
+			connection = DriverManager.getConnection(dbUrl, "image_gallery", db_pwd);
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 			System.exit(1);
